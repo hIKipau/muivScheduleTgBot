@@ -37,19 +37,19 @@ go run ./cmd/bot/main.go
 
 ## Структура проекта
 
-muivScheduleTgBot/  
-├─ cmd/  
-│  └─ bot/  
-│     └─ main.go         # точка входа, запуск бота  
-├─ internal/  
-│  ├─ schedule/  
-│  │  ├─ schedule.go     # структура Day, методы ToMessage  
-│  │  ├─ parser.go       # функции для парсинга Excel  
-│  │  └─ updater.go      # обновление расписания  
-│  └─ bot/  
-│     ├─ handlers.go     # обработка сообщений и команд  
-│     └─ keyboard.go     # клавиатуры для бота  
-├─ currentSchedule/  
-│  └─ newSchedule.xlsx   # папка с актуальными Excel-файлами  
-└─ go.mod                # зависимости проекта  
+muivScheduleTgBot/
+  cmd/
+    bot/
+      main.go         # точка входа, запуск бота
+  internal/
+    schedule/
+      schedule.go     # структура Day, методы ToMessage
+      parser.go       # функции для парсинга Excel
+      updater.go      # обновление расписания
+    bot/
+      handlers.go     # обработка сообщений и команд
+      keyboard.go     # клавиатуры для бота
+  currentSchedule/
+    newSchedule.xlsx   # папка с актуальными Excel-файлами
+  go.mod              # зависимости проекта
 
