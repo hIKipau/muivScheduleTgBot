@@ -5,9 +5,9 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/joho/godotenv"
 	"log"
+	"muivScheduleTgBot/internal/bot"
+	"muivScheduleTgBot/internal/schedule"
 	"os"
-	"tgBotAshley/internal/bot"
-	"tgBotAshley/internal/schedule"
 )
 
 func main() {

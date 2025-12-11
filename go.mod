@@ -1,4 +1,4 @@
-module tgBotAshley
+module muivScheduleTgBot
 
 go 1.25.0
 
