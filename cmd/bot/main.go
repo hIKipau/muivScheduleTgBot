@@ -1,19 +1,18 @@
 package main
 
 import (
+	"context"
+	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/jackc/pgx/v5"
 	"github.com/joho/godotenv"
 	"log"
 	"log/slog"
 	"muivScheduleTgBot/internal/bot"
+	"muivScheduleTgBot/internal/repo"
 	"muivScheduleTgBot/internal/schedule"
 	"os"
 )
-
-type Course struct {
-	GroupCount int
-	Schedule   []schedule.Schedule
-}
 
 func main() {
 
@@ -22,6 +21,18 @@ func main() {
 		slog.Error("Error loading .env file", err)
 		panic(err)
 	}
+	conn, err := pgx.Connect(context.Background(), os.Getenv("DATABASE_URL"))
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
+		panic(err)
+	}
+	err = conn.Ping(context.Background())
+	if err != nil {
+		slog.Error("unable to ping databasse")
+		panic(err)
+	}
+	userRepo := repo.New(conn)
+	defer conn.Close(context.Background())
 
 	TgBot, err := tgbotapi.NewBotAPI(os.Getenv("BOT_TOKEN"))
 	if err != nil {
@@ -39,33 +50,10 @@ func main() {
 	updates := TgBot.GetUpdatesChan(u)
 	slog.Info("Get updates channel")
 
-	scheduleCourse4 := &[schedule.CountOfGroups4]*schedule.Schedule{}
-	for i := 0; i < schedule.CountOfGroups4; i++ {
-		scheduleCourse4[i] = &schedule.Schedule{}
-	}
-	scheduleCourse3 := &[schedule.CountOfGroups3]*schedule.Schedule{}
-	for i := 0; i < schedule.CountOfGroups3; i++ {
-		scheduleCourse3[i] = &schedule.Schedule{}
-	}
-	scheduleCourse2 := &[schedule.CountOfGroups2]*schedule.Schedule{}
-	for i := 0; i < schedule.CountOfGroups2; i++ {
-		scheduleCourse2[i] = &schedule.Schedule{}
-	}
-	scheduleCourse111 := &[schedule.CountOfGroups111]*schedule.Schedule{}
-	for i := 0; i < schedule.CountOfGroups111; i++ {
-		scheduleCourse111[i] = &schedule.Schedule{}
-	}
-	scheduleCourse19 := &[schedule.CountOfGroups19]*schedule.Schedule{}
-	for i := 0; i < schedule.CountOfGroups19; i++ {
-		scheduleCourse19[i] = &schedule.Schedule{}
-	}
-	slog.Info("Starting LoadSchedule")
-	err = schedule.LoadSchedule(scheduleCourse4,
-		scheduleCourse3,
-		scheduleCourse2,
-		scheduleCourse111,
-		scheduleCourse19)
+	gs := schedule.NewGlobalSchedules()
 
+	slog.Info("Starting LoadSchedule")
+	err = gs.LoadSchedule()
 	if err != nil {
 		slog.Error("cant parse new schedule", err)
 		panic(err)
@@ -76,12 +64,19 @@ func main() {
 		if update.Message == nil { // ignore any non-Message updates
 			continue
 		}
+		if update.Message.IsCommand() {
+			if update.Message.Command() == "update" {
+				slog.Info("Starting LoadSchedule")
+				err = gs.LoadSchedule()
+				if err != nil {
+					slog.Error("cant parse new schedule", err)
+					panic(err)
+				}
+				slog.Info("LoadSchedule is successfully complete")
+			}
+		}
 
-		msg := bot.Handler(&update, scheduleCourse4,
-			scheduleCourse3,
-			scheduleCourse2,
-			scheduleCourse111,
-			scheduleCourse19)
+		msg := bot.Handler(context.Background(), &update, userRepo, gs)
 
 		if _, err = TgBot.Send(msg); err != nil {
 			slog.Error("TgBot cant send new message", err)

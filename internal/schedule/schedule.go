@@ -2,8 +2,48 @@ package schedule
 
 import (
 	"fmt"
+	"github.com/tealeg/xlsx/v3"
+	"log/slog"
 	"strings"
 )
+
+// Variable store *Schedule for all groups
+type GlobalSchedules [5][]*Schedule
+
+// NewGlobalSchedules() - Create and initialize new pointer to GlobalSchedules
+func NewGlobalSchedules() *GlobalSchedules {
+	var gs GlobalSchedules
+	gs.new()
+	return &gs
+}
+
+func (gs *GlobalSchedules) new() {
+	(*gs)[0] = make([]*Schedule, CountOfGroups19)
+	for i := 0; i < CountOfGroups19; i++ {
+		(*gs)[Course19i][i] = &Schedule{}
+	}
+
+	(*gs)[1] = make([]*Schedule, CountOfGroups111)
+	for i := 0; i < CountOfGroups111; i++ {
+		(*gs)[Course111i][i] = &Schedule{}
+	}
+
+	(*gs)[2] = make([]*Schedule, CountOfGroups2)
+	for i := 0; i < CountOfGroups2; i++ {
+		(*gs)[Course2i][i] = &Schedule{}
+	}
+
+	(*gs)[3] = make([]*Schedule, CountOfGroups3)
+	for i := 0; i < CountOfGroups3; i++ {
+		(*gs)[Course3i][i] = &Schedule{}
+	}
+
+	(*gs)[4] = make([]*Schedule, CountOfGroups4)
+	for i := 0; i < CountOfGroups4; i++ {
+		(*gs)[Course4i][i] = &Schedule{}
+	}
+
+}
 
 type Schedule struct {
 	WeekDay [6]Day
@@ -29,313 +69,338 @@ func (d Day) ToMessage() string {
 
 	return b.String()
 }
+func GetSchedule(course string, group string, gs *GlobalSchedules) *Schedule {
 
-func LoadSchedule(scheduleCourse4 *[CountOfGroups4]*Schedule,
-	scheduleCourse3 *[CountOfGroups3]*Schedule,
-	scheduleCourse2 *[CountOfGroups2]*Schedule,
-	scheduleCourse111 *[CountOfGroups111]*Schedule,
-	scheduleCourse19 *[CountOfGroups19]*Schedule) error {
+	var curCourse int
+	curGroup := ScheduleInfo[course][group] - 3
 
-	err := ParseSchedule(scheduleCourse4[0], Course4.Course, Course4.Groups["ИСП/П-22-09"])
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	err = ParseSchedule(scheduleCourse4[1], Course4.Course, Course4.Groups["ИСП/П-23-11"])
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	err = ParseSchedule(scheduleCourse4[2], Course4.Course, Course4.Groups["ИСП/Р-22-09\nИСП/Р-23-11"])
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	err = ParseSchedule(scheduleCourse4[3], Course4.Course, Course4.Groups["РЕК-22-09\nРЕК-23-11"])
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	err = ParseSchedule(scheduleCourse4[4], Course4.Course, Course4.Groups["ДО-23-11"])
-	if err != nil {
-		fmt.Println(err)
-		return err
+	switch course {
+	case Course4s:
+		curCourse = 4
+	case Course3s:
+		curCourse = 3
+	case Course2s:
+		curCourse = 2
+	case Course111s:
+		curCourse = 1
+	case Course19s:
+		curCourse = 0
+	default:
+		curCourse = 4
 	}
 
-	err = ParseSchedule(scheduleCourse3[0], Course3.Course, Course3.Groups["БАД-24-11"])
+	return (*gs)[curCourse][curGroup]
+}
+
+// LoadSchedule loads a new schedule from the path:
+// "./currentSchedule/newSchedule.xlsx"
+func (gs *GlobalSchedules) LoadSchedule() error {
+	wb, err := xlsx.OpenFile("./currentSchedule/newSchedule.xlsx")
+	if err != nil {
+		slog.Error("Cant open newSchedule.xlsx:", err)
+		return err
+	}
+
+	err = ParseSchedule(wb, (*gs)[Course4i][0], Course4s, ScheduleInfo[Course4s]["ИСП/П-22-09"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse3[1], Course3.Course, Course3.Groups["ТД-24-11"])
+	err = ParseSchedule(wb, (*gs)[Course4i][1], Course4s, ScheduleInfo[Course4s]["ИСП/П-23-11"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse3[2], Course3.Course, Course3.Groups["ФИН-23-09\nФИН-24-11"])
+	err = ParseSchedule(wb, (*gs)[Course4i][2], Course4s, ScheduleInfo[Course4s]["ИСП/Р-22-09\nИСП/Р-23-11"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse3[3], Course3.Course, Course3.Groups["КОМ-23-09"])
+	err = ParseSchedule(wb, (*gs)[Course4i][3], Course4s, ScheduleInfo[Course4s]["РЕК-22-09\nРЕК-23-11"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse3[4], Course3.Course, Course3.Groups["ОДЛ-23-09\nОДЛ-24-11"])
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	err = ParseSchedule(scheduleCourse3[5], Course3.Course, Course3.Groups["ЮР/со-24-11"])
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	err = ParseSchedule(scheduleCourse3[6], Course3.Course, Course3.Groups["ПСО-23-09.1"])
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	err = ParseSchedule(scheduleCourse3[7], Course3.Course, Course3.Groups["ПСО-23-09.2"])
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	err = ParseSchedule(scheduleCourse3[8], Course3.Course, Course3.Groups["РЕК-24-11"])
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	err = ParseSchedule(scheduleCourse3[9], Course3.Course, Course3.Groups["РЕК-23-09"])
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	err = ParseSchedule(scheduleCourse3[10], Course3.Course, Course3.Groups["ДИЗ-24-11"])
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	err = ParseSchedule(scheduleCourse3[11], Course3.Course, Course3.Groups["ИСП/р-23-09\nИСП/р-24-11"])
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	err = ParseSchedule(scheduleCourse3[12], Course3.Course, Course3.Groups["ИСП/п-23-09.1"])
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	err = ParseSchedule(scheduleCourse3[13], Course3.Course, Course3.Groups["ИСП/п-23-09.2\nИСП/п-24-11"])
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	err = ParseSchedule(scheduleCourse3[14], Course3.Course, Course3.Groups["ФК-24-11"])
+	err = ParseSchedule(wb, (*gs)[Course4i][4], Course4s, ScheduleInfo[Course4s]["ДО-23-11"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
 
-	err = ParseSchedule(scheduleCourse2[0], Course2.Course, Course2.Groups["БАД-24-09\nБАД-25-11"])
+	err = ParseSchedule(wb, (*gs)[Course3i][0], Course3s, ScheduleInfo[Course3s]["БАД-24-11"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse2[1], Course2.Course, Course2.Groups["ФИН-24-09"])
+	err = ParseSchedule(wb, (*gs)[Course3i][1], Course3s, ScheduleInfo[Course3s]["ТД-24-11"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse2[2], Course2.Course, Course2.Groups["БУХ-24-09"])
+	err = ParseSchedule(wb, (*gs)[Course3i][2], Course3s, ScheduleInfo[Course3s]["ФИН-23-09\nФИН-24-11"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse2[3], Course2.Course, Course2.Groups["КСК-24-09\nКСК-25-11"])
+	err = ParseSchedule(wb, (*gs)[Course3i][3], Course3s, ScheduleInfo[Course3s]["КОМ-23-09"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse2[4], Course2.Course, Course2.Groups["ИСП/П-24-09"])
+	err = ParseSchedule(wb, (*gs)[Course3i][4], Course3s, ScheduleInfo[Course3s]["ОДЛ-23-09\nОДЛ-24-11"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse2[5], Course2.Course, Course2.Groups["ИСП/Р-24-09"])
+	err = ParseSchedule(wb, (*gs)[Course3i][5], Course3s, ScheduleInfo[Course3s]["ЮР/со-24-11"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse2[6], Course2.Course, Course2.Groups["ТД-24-09"])
+	err = ParseSchedule(wb, (*gs)[Course3i][6], Course3s, ScheduleInfo[Course3s]["ПСО-23-09.1"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse2[7], Course2.Course, Course2.Groups["ОДЛ-24-09"])
+	err = ParseSchedule(wb, (*gs)[Course3i][7], Course3s, ScheduleInfo[Course3s]["ПСО-23-09.2"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse2[8], Course2.Course, Course2.Groups["ЮР/со-24-09\nЮР/со-25-11"])
+	err = ParseSchedule(wb, (*gs)[Course3i][8], Course3s, ScheduleInfo[Course3s]["РЕК-24-11"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse2[9], Course2.Course, Course2.Groups["ЮР/са-24-09\nЮР/са-25-11"])
+	err = ParseSchedule(wb, (*gs)[Course3i][9], Course3s, ScheduleInfo[Course3s]["РЕК-23-09"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse2[10], Course2.Course, Course2.Groups["РЕК-24-09"])
+	err = ParseSchedule(wb, (*gs)[Course3i][10], Course3s, ScheduleInfo[Course3s]["ДИЗ-24-11"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-
-	err = ParseSchedule(scheduleCourse111[0], Course111.Course, Course111.Groups["ФИН-25-11"])
+	err = ParseSchedule(wb, (*gs)[Course3i][11], Course3s, ScheduleInfo[Course3s]["ИСП/р-23-09\nИСП/р-24-11"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse111[1], Course111.Course, Course111.Groups["БУХ-25-11"])
+	err = ParseSchedule(wb, (*gs)[Course3i][12], Course3s, ScheduleInfo[Course3s]["ИСП/п-23-09.1"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse111[2], Course111.Course, Course111.Groups["ТД-25-11"])
+	err = ParseSchedule(wb, (*gs)[Course3i][13], Course3s, ScheduleInfo[Course3s]["ИСП/п-23-09.2\nИСП/п-24-11"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse111[3], Course111.Course, Course111.Groups["ОДЛ-25-11"])
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	err = ParseSchedule(scheduleCourse111[4], Course111.Course, Course111.Groups["ОИБАС-25-11"])
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	err = ParseSchedule(scheduleCourse111[5], Course111.Course, Course111.Groups["ИСП/П-25-11"])
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	err = ParseSchedule(scheduleCourse111[6], Course111.Course, Course111.Groups["ИСП/Р-25-11"])
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	err = ParseSchedule(scheduleCourse111[7], Course111.Course, Course111.Groups["РЕК-25-11"])
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	err = ParseSchedule(scheduleCourse111[8], Course111.Course, Course111.Groups["ДИЗ-25-11"])
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	err = ParseSchedule(scheduleCourse111[9], Course111.Course, Course111.Groups["ФК-25-11"])
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	err = ParseSchedule(scheduleCourse111[10], Course111.Course, Course111.Groups["ПВНК-25-11"])
+	err = ParseSchedule(wb, (*gs)[Course3i][14], Course3s, ScheduleInfo[Course3s]["ФК-24-11"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
 
-	err = ParseSchedule(scheduleCourse19[0], Course19.Course, Course19.Groups["БАД-25-09"])
+	err = ParseSchedule(wb, (*gs)[Course2i][0], Course2s, ScheduleInfo[Course2s]["БАД-24-09\nБАД-25-11"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse19[1], Course19.Course, Course19.Groups["БУХ-25-09"])
+	err = ParseSchedule(wb, (*gs)[Course2i][1], Course2s, ScheduleInfo[Course2s]["ФИН-24-09"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse19[2], Course19.Course, Course19.Groups["ИСП/П-25-09.1"])
+	err = ParseSchedule(wb, (*gs)[Course2i][2], Course2s, ScheduleInfo[Course2s]["БУХ-24-09"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse19[3], Course19.Course, Course19.Groups["ИСП/П-25-09.2"])
+	err = ParseSchedule(wb, (*gs)[Course2i][3], Course2s, ScheduleInfo[Course2s]["КСК-24-09\nКСК-25-11"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse19[4], Course19.Course, Course19.Groups["ИСП/Р-25-09"])
+	err = ParseSchedule(wb, (*gs)[Course2i][4], Course2s, ScheduleInfo[Course2s]["ИСП/П-24-09"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse19[5], Course19.Course, Course19.Groups["КСК-25-09"])
+	err = ParseSchedule(wb, (*gs)[Course2i][5], Course2s, ScheduleInfo[Course2s]["ИСП/Р-24-09"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse19[6], Course19.Course, Course19.Groups["ТД-25-09.1"])
+	err = ParseSchedule(wb, (*gs)[Course2i][6], Course2s, ScheduleInfo[Course2s]["ТД-24-09"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse19[7], Course19.Course, Course19.Groups["ТД-25-09.2"])
+	err = ParseSchedule(wb, (*gs)[Course2i][7], Course2s, ScheduleInfo[Course2s]["ОДЛ-24-09"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse19[8], Course19.Course, Course19.Groups["ОДЛ-25-09.1"])
+	err = ParseSchedule(wb, (*gs)[Course2i][8], Course2s, ScheduleInfo[Course2s]["ЮР/со-24-09\nЮР/со-25-11"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse19[9], Course19.Course, Course19.Groups["ОДЛ-25-09.2"])
+	err = ParseSchedule(wb, (*gs)[Course2i][9], Course2s, ScheduleInfo[Course2s]["ЮР/са-24-09\nЮР/са-25-11"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse19[10], Course19.Course, Course19.Groups["ЮР/са-25-09.1"])
+	err = ParseSchedule(wb, (*gs)[Course2i][10], Course2s, ScheduleInfo[Course2s]["РЕК-24-09"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse19[11], Course19.Course, Course19.Groups["ЮР/са-25-09.2"])
+
+	err = ParseSchedule(wb, (*gs)[Course111i][0], Course111s, ScheduleInfo[Course111s]["ФИН-25-11"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse19[12], Course19.Course, Course19.Groups["ЮР/со-25-09"])
+	err = ParseSchedule(wb, (*gs)[Course111i][1], Course111s, ScheduleInfo[Course111s]["БУХ-25-11"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse19[13], Course19.Course, Course19.Groups["РЕК-25-09.1"])
+	err = ParseSchedule(wb, (*gs)[Course111i][2], Course111s, ScheduleInfo[Course111s]["ТД-25-11"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse19[14], Course19.Course, Course19.Groups["РЕК-25-09.2"])
+	err = ParseSchedule(wb, (*gs)[Course111i][3], Course111s, ScheduleInfo[Course111s]["ОДЛ-25-11"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse19[15], Course19.Course, Course19.Groups["РЕК-25-09.3"])
+	err = ParseSchedule(wb, (*gs)[Course111i][4], Course111s, ScheduleInfo[Course111s]["ОИБАС-25-11"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse19[16], Course19.Course, Course19.Groups["ПВНК-25-09"])
+	err = ParseSchedule(wb, (*gs)[Course111i][5], Course111s, ScheduleInfo[Course111s]["ИСП/П-25-11"])
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	err = ParseSchedule(scheduleCourse19[17], Course19.Course, Course19.Groups["ФИН-25-09"])
+	err = ParseSchedule(wb, (*gs)[Course111i][6], Course111s, ScheduleInfo[Course111s]["ИСП/Р-25-11"])
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	err = ParseSchedule(wb, (*gs)[Course111i][7], Course111s, ScheduleInfo[Course111s]["РЕК-25-11"])
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	err = ParseSchedule(wb, (*gs)[Course111i][8], Course111s, ScheduleInfo[Course111s]["ДИЗ-25-11"])
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	err = ParseSchedule(wb, (*gs)[Course111i][9], Course111s, ScheduleInfo[Course111s]["ФК-25-11"])
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	err = ParseSchedule(wb, (*gs)[Course111i][10], Course111s, ScheduleInfo[Course111s]["ПВНК-25-11"])
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	err = ParseSchedule(wb, (*gs)[Course19i][0], Course19s, ScheduleInfo[Course19s]["БАД-25-09"])
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	err = ParseSchedule(wb, (*gs)[Course19i][1], Course19s, ScheduleInfo[Course19s]["БУХ-25-09"])
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	err = ParseSchedule(wb, (*gs)[Course19i][2], Course19s, ScheduleInfo[Course19s]["ИСП/П-25-09.1"])
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	err = ParseSchedule(wb, (*gs)[Course19i][3], Course19s, ScheduleInfo[Course19s]["ИСП/П-25-09.2"])
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	err = ParseSchedule(wb, (*gs)[Course19i][4], Course19s, ScheduleInfo[Course19s]["ИСП/Р-25-09"])
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	err = ParseSchedule(wb, (*gs)[Course19i][5], Course19s, ScheduleInfo[Course19s]["КСК-25-09"])
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	err = ParseSchedule(wb, (*gs)[Course19i][6], Course19s, ScheduleInfo[Course19s]["ТД-25-09.1"])
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	err = ParseSchedule(wb, (*gs)[Course19i][7], Course19s, ScheduleInfo[Course19s]["ТД-25-09.2"])
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	err = ParseSchedule(wb, (*gs)[Course19i][8], Course19s, ScheduleInfo[Course19s]["ОДЛ-25-09.1"])
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	err = ParseSchedule(wb, (*gs)[Course19i][9], Course19s, ScheduleInfo[Course19s]["ОДЛ-25-09.2"])
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	err = ParseSchedule(wb, (*gs)[Course19i][10], Course19s, ScheduleInfo[Course19s]["ЮР/са-25-09.1"])
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	err = ParseSchedule(wb, (*gs)[Course19i][11], Course19s, ScheduleInfo[Course19s]["ЮР/са-25-09.2"])
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	err = ParseSchedule(wb, (*gs)[Course19i][12], Course19s, ScheduleInfo[Course19s]["ЮР/со-25-09"])
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	err = ParseSchedule(wb, (*gs)[Course19i][13], Course19s, ScheduleInfo[Course19s]["РЕК-25-09.1"])
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	err = ParseSchedule(wb, (*gs)[Course19i][14], Course19s, ScheduleInfo[Course19s]["РЕК-25-09.2"])
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	err = ParseSchedule(wb, (*gs)[Course19i][15], Course19s, ScheduleInfo[Course19s]["РЕК-25-09.3"])
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	err = ParseSchedule(wb, (*gs)[Course19i][16], Course19s, ScheduleInfo[Course19s]["ПВНК-25-09"])
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	err = ParseSchedule(wb, (*gs)[Course19i][17], Course19s, ScheduleInfo[Course19s]["ФИН-25-09"])
 	if err != nil {
 		fmt.Println(err)
 		return err

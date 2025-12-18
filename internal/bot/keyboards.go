@@ -5,7 +5,10 @@ import tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 var DefaultKeyboard = tgbotapi.NewReplyKeyboard(
 	tgbotapi.NewKeyboardButtonRow(
 		tgbotapi.NewKeyboardButton("Сегодня"),
+	),
+	tgbotapi.NewKeyboardButtonRow(
 		tgbotapi.NewKeyboardButton("Выбрать день"),
+		tgbotapi.NewKeyboardButton("Сбросить"),
 	),
 )
 var ChooseDayKeyboard = tgbotapi.NewReplyKeyboard(
@@ -28,8 +31,8 @@ var ChooseCourseKeyboard = tgbotapi.NewReplyKeyboard(
 		tgbotapi.NewKeyboardButton("2к9кл/1к11кл"),
 	),
 	tgbotapi.NewKeyboardButtonRow(
-		tgbotapi.NewKeyboardButton("1к9к"),
-		tgbotapi.NewKeyboardButton("1к11к"),
+		tgbotapi.NewKeyboardButton("1к9кл"),
+		tgbotapi.NewKeyboardButton("1к11кл"),
 	),
 )
 
@@ -42,6 +45,9 @@ var ChooseGroup4CKeyboard = tgbotapi.NewReplyKeyboard(
 		tgbotapi.NewKeyboardButton("ИСП/П-22-09"),
 		tgbotapi.NewKeyboardButton("ИСП/П-23-11"),
 		tgbotapi.NewKeyboardButton("ДО-23-11"),
+	),
+	tgbotapi.NewKeyboardButtonRow(
+		tgbotapi.NewKeyboardButton("Назад "),
 	),
 )
 
@@ -71,6 +77,9 @@ var ChooseGroup3CKeyboard = tgbotapi.NewReplyKeyboard(
 		tgbotapi.NewKeyboardButton("ИСП/п-23-09.2\nИСП/п-24-11"),
 		tgbotapi.NewKeyboardButton("ФК-24-11"),
 	),
+	tgbotapi.NewKeyboardButtonRow(
+		tgbotapi.NewKeyboardButton("Назад"),
+	),
 )
 
 var ChooseGroup2CKeyboard = tgbotapi.NewReplyKeyboard(
@@ -99,6 +108,9 @@ var ChooseGroup2CKeyboard = tgbotapi.NewReplyKeyboard(
 		tgbotapi.NewKeyboardButton("ИСП/П-24-09"),
 		tgbotapi.NewKeyboardButton("ИСП/Р-24-09"),
 	),
+	tgbotapi.NewKeyboardButtonRow(
+		tgbotapi.NewKeyboardButton("Назад"),
+	),
 )
 
 var ChooseGroup1C11Keyboard = tgbotapi.NewReplyKeyboard(
@@ -118,6 +130,9 @@ var ChooseGroup1C11Keyboard = tgbotapi.NewReplyKeyboard(
 		tgbotapi.NewKeyboardButton("ДИЗ-25-11"),
 		tgbotapi.NewKeyboardButton("ФК-25-11"),
 		tgbotapi.NewKeyboardButton("ПВНК-25-11"),
+	),
+	tgbotapi.NewKeyboardButtonRow(
+		tgbotapi.NewKeyboardButton("Назад"),
 	),
 )
 
@@ -149,5 +164,8 @@ var ChooseGroup1C9Keyboard = tgbotapi.NewReplyKeyboard(
 		tgbotapi.NewKeyboardButton("РЕК-25-09.2"),
 		tgbotapi.NewKeyboardButton("РЕК-25-09.3"),
 		tgbotapi.NewKeyboardButton("ПВНК-25-09"),
+	),
+	tgbotapi.NewKeyboardButtonRow(
+		tgbotapi.NewKeyboardButton("Назад"),
 	),
 )

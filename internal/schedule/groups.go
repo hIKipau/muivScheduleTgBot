@@ -1,32 +1,38 @@
 package schedule
 
-type CourseInfo struct {
-	Course string
-	Groups map[string]int
-}
-
 const (
 	CountOfGroups4   = 5
 	CountOfGroups3   = 15
 	CountOfGroups2   = 11
 	CountOfGroups111 = 11
 	CountOfGroups19  = 18
+
+	Course4s   = "4к 9кл, 3к 11кл"
+	Course3s   = "3к 9кл, 2к 11кл"
+	Course2s   = "2к 9кл, 1к 11 кл"
+	Course111s = "1к 11кл"
+	Course19s  = "1к 9кл"
+
+	Course4i   = 4
+	Course3i   = 3
+	Course2i   = 2
+	Course111i = 1
+	Course19i  = 0
 )
 
-var Course4 = &CourseInfo{
-	Course: "4к 9кл, 3к 11кл",
-	Groups: map[string]int{
+// ScheduleInfo - map variable with - map[string]map[string]int signature,
+// returns integer of group, for work wit MSExcel.
+//
+//	example: var groupNumber int = ScheduleInfo[course][group]
+var ScheduleInfo = map[string]map[string]int{
+	"4к 9кл, 3к 11кл": {
 		"ИСП/П-22-09":              3,
 		"ИСП/П-23-11":              4,
 		"ИСП/Р-22-09\nИСП/Р-23-11": 5,
 		"РЕК-22-09\nРЕК-23-11":     6,
 		"ДО-23-11":                 7,
 	},
-}
-
-var Course3 = &CourseInfo{
-	Course: "3к 9кл, 2к 11кл",
-	Groups: map[string]int{
+	"3к 9кл, 2к 11кл": {
 		"БАД-24-11":                  3,
 		"ТД-24-11":                   4,
 		"ФИН-23-09\nФИН-24-11":       5,
@@ -43,11 +49,7 @@ var Course3 = &CourseInfo{
 		"ИСП/п-23-09.2\nИСП/п-24-11": 15,
 		"ФК-24-11":                   16,
 	},
-}
-
-var Course2 = &CourseInfo{
-	Course: "2к 9кл, 1к 11 кл",
-	Groups: map[string]int{
+	"2к 9кл, 1к 11 кл": {
 		"БАД-24-09\nБАД-25-11":     3,
 		"ФИН-24-09":                4,
 		"БУХ-24-09":                5,
@@ -60,11 +62,7 @@ var Course2 = &CourseInfo{
 		"ЮР/са-24-09\nЮР/са-25-11": 12,
 		"РЕК-24-09":                13,
 	},
-}
-
-var Course111 = &CourseInfo{
-	Course: "1к 11кл",
-	Groups: map[string]int{
+	"1к 11кл": {
 		"ФИН-25-11":   3,
 		"БУХ-25-11":   4,
 		"ТД-25-11":    5,
@@ -72,16 +70,12 @@ var Course111 = &CourseInfo{
 		"ОИБАС-25-11": 7,
 		"ИСП/П-25-11": 8,
 		"ИСП/Р-25-11": 9,
-		"РЕК-25-11":   11,
-		"ДИЗ-25-11":   12,
-		"ФК-25-11":    13,
-		"ПВНК-25-11":  14,
+		"РЕК-25-11":   10,
+		"ДИЗ-25-11":   11,
+		"ФК-25-11":    12,
+		"ПВНК-25-11":  13,
 	},
-}
-
-var Course19 = &CourseInfo{
-	Course: "1к 9кл",
-	Groups: map[string]int{
+	"1к 9кл": {
 		"БАД-25-09":     3,
 		"БУХ-25-09":     4,
 		"ФИН-25-09":     5,

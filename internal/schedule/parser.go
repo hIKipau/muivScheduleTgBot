@@ -8,20 +8,14 @@ import (
 )
 
 // ParseSchedule - Parse new schedule into s *Schedule
-func ParseSchedule(s *Schedule, course string, group int) error {
-	wb, err := xlsx.OpenFile("./currentSchedule/newSchedule.xlsx")
-	if err != nil {
-		slog.Error("Cant open newSchedule.xlsx:", err)
-		return err
-	}
+func ParseSchedule(wb *xlsx.File, s *Schedule, course string, group int) error {
 	//sh, ok := wb.Sheet["4к 9кл, 3к 11кл"]
 	sh, ok := wb.Sheet[course]
-
 	if !ok {
 		slog.Error("Cant find Sheet in Table:")
 		os.Exit(1)
 	}
-	fmt.Println(group)
+
 	slog.Warn("Start parseDate for " + string(course) + " - " + string(group))
 	parseDate(&s.WeekDay, sh)
 	slog.Warn("Start parseTime" + string(course) + " - " + string(rune(group)))
