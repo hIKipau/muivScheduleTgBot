@@ -72,7 +72,6 @@ func main() {
 				panic(err)
 			}
 			err = gs.LoadSchedule()
-
 			continue
 		}
 
