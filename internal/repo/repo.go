@@ -3,14 +3,14 @@ package repo
 import (
 	"context"
 	"fmt"
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type Repo struct {
-	db *pgx.Conn
+	db *pgxpool.Pool
 }
 
-func New(db *pgx.Conn) *Repo {
+func New(db *pgxpool.Pool) *Repo {
 	return &Repo{
 		db: db,
 	}

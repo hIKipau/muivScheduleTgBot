@@ -1,0 +1,14 @@
+services:
+  muivSchedule-postgres:
+    image: postgres
+    container_name: muivSchedule-postgres
+    env_file:
+      - .env
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - muivSchedule_postgres_data:/var/lib/postgresql/18/data
+volumes:
+  muivSchedule_postgres_data:

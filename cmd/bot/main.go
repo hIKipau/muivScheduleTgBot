@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
 	"log"
 	"log/slog"
@@ -21,7 +21,9 @@ func main() {
 		slog.Error("Error loading .env file", err)
 		panic(err)
 	}
-	conn, err := pgx.Connect(context.Background(), os.Getenv("DATABASE_URL"))
+	conn, err := pgxpool.New(context.Background(), os.Getenv("DATABASE_URL"))
+	defer conn.Close()
+
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
 		panic(err)
@@ -32,7 +34,6 @@ func main() {
 		panic(err)
 	}
 	userRepo := repo.New(conn)
-	defer conn.Close(context.Background())
 
 	TgBot, err := tgbotapi.NewBotAPI(os.Getenv("BOT_TOKEN"))
 	if err != nil {
