@@ -65,20 +65,18 @@ func main() {
 		if update.Message == nil { // ignore any non-Message updates
 			continue
 		}
-		if update.Message.IsCommand() {
-			if update.Message.Command() == "update" {
-				slog.Info("Starting LoadSchedule")
-				err = gs.LoadSchedule()
-				if err != nil {
-					slog.Error("cant parse new schedule", err)
-					panic(err)
-				}
-				slog.Info("LoadSchedule is successfully complete")
+		if update.Message.Document != nil {
+			msg := schedule.Updater(&update, TgBot)
+			if _, err = TgBot.Send(msg); err != nil {
+				slog.Error("TgBot cant send new message", err)
+				panic(err)
 			}
+			err = gs.LoadSchedule()
+
+			continue
 		}
 
 		msg := bot.Handler(context.Background(), &update, userRepo, gs)
-
 		if _, err = TgBot.Send(msg); err != nil {
 			slog.Error("TgBot cant send new message", err)
 			panic(err)
