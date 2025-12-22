@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-// Variable store *Schedule for all groups
+// GlobalSchedules Variable store *Schedule for all groups
 type GlobalSchedules [5][]*Schedule
 
 // NewGlobalSchedules() - Create and initialize new pointer to GlobalSchedules

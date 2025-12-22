@@ -9,29 +9,28 @@ import (
 
 // ParseSchedule - Parse new schedule into s *Schedule
 func ParseSchedule(wb *xlsx.File, s *Schedule, course string, group int) error {
-	//sh, ok := wb.Sheet["4к 9кл, 3к 11кл"]
 	sh, ok := wb.Sheet[course]
 	if !ok {
 		slog.Error("Cant find Sheet in Table:")
 		os.Exit(1)
 	}
 
-	slog.Warn("Start parseDate for " + string(course) + " - " + string(group))
+	slog.Warn("Start parseDate for", "course", course, "group", group)
 	parseDate(&s.WeekDay, sh)
-	slog.Warn("Start parseTime" + string(course) + " - " + string(rune(group)))
+	slog.Warn("Start parseTime", "course", course, "group", group)
 	parseTime(&s.WeekDay, sh)
-	slog.Warn("Start parseLesson" + string(course) + " - " + string(rune(group)))
+	slog.Warn("Start parseLesson", "course", course, "group", group)
 	parseLesson(&s.WeekDay, sh, group)
-	slog.Warn("Parsing successfully completed" + string(course) + " - " + string(rune(group)))
+	slog.Warn("Parsing successfully completed", "course", course, "group", group)
 
 	return nil
 }
 
 func parseDate(days *[6]Day, sh *xlsx.Sheet) {
-	slog.Info("parseDate: ")
+	slog.Info("parseDate init")
 	day := 0
 	for i := 5; i < 33; i += 5 {
-		slog.Info("parseDate: " + string(rune(day)))
+		slog.Info("parseDate", day)
 
 		theCell, err := sh.Cell(i, 0)
 		if err != nil {
@@ -44,11 +43,12 @@ func parseDate(days *[6]Day, sh *xlsx.Sheet) {
 }
 
 func parseTime(line *[6]Day, sh *xlsx.Sheet) {
+	slog.Info("parseTime init")
 
 	day := 0
 	time := 0
 	for i := 5; i < 35; i++ {
-		slog.Info("parseTime: " + string(rune(day)))
+		slog.Info("parseTime", day)
 
 		if time > 4 {
 			day++
@@ -65,11 +65,11 @@ func parseTime(line *[6]Day, sh *xlsx.Sheet) {
 }
 
 func parseLesson(line *[6]Day, sh *xlsx.Sheet, group int) {
-	fmt.Println("parseLesson")
+	slog.Info("parseLesson init")
 	day := 0
 	lesson := 0
 	for i := 5; i < 35; i++ {
-		slog.Info("parseLesson: " + string(rune(day)) + " - " + string(rune(group)))
+		slog.Info("parseLesson", "day", day, "group", group)
 		if lesson > 4 {
 			day++
 			lesson = 0

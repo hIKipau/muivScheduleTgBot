@@ -36,7 +36,7 @@ func Handler(ctx context.Context,
 				update.Message.From.ID,
 				schedule.Course4s)
 			if err != nil {
-				msg.Text = "Не смог сохранить иди нахуй"
+				msg.Text = "333: Не получилось сохранить, попробуй /start"
 				return msg
 			}
 			msg.ReplyMarkup = ChooseGroup4CKeyboard
@@ -47,7 +47,7 @@ func Handler(ctx context.Context,
 				update.Message.From.ID,
 				schedule.Course3s)
 			if err != nil {
-				msg.Text = "Не смог сохранить иди нахуй"
+				msg.Text = "333: Не получилось сохранить, попробуй /start"
 				return msg
 			}
 			msg.ReplyMarkup = ChooseGroup3CKeyboard
@@ -58,7 +58,7 @@ func Handler(ctx context.Context,
 				update.Message.From.ID,
 				schedule.Course2s)
 			if err != nil {
-				msg.Text = "Не смог сохранить иди нахуй"
+				msg.Text = "333: Не получилось сохранить, попробуй /start"
 				return msg
 			}
 			msg.ReplyMarkup = ChooseGroup2CKeyboard
@@ -69,7 +69,7 @@ func Handler(ctx context.Context,
 				update.Message.From.ID,
 				schedule.Course19s)
 			if err != nil {
-				msg.Text = "Не смог сохранить иди нахуй"
+				msg.Text = "333: Не получилось сохранить, попробуй /start"
 				return msg
 			}
 			msg.ReplyMarkup = ChooseGroup1C9Keyboard
@@ -80,14 +80,14 @@ func Handler(ctx context.Context,
 				update.Message.From.ID,
 				schedule.Course111s)
 			if err != nil {
-				msg.Text = "Не смог сохранить иди нахуй"
+				msg.Text = "333: Не получилось сохранить, попробуй /start"
 				return msg
 			}
 			msg.ReplyMarkup = ChooseGroup1C11Keyboard
 			msg.Text = "Красава,теперь группу"
 			return msg
 		default:
-			msg.Text = "/start"
+			msg.Text = "Попробуй написать /start"
 			return msg
 		}
 	} else if strings.HasSuffix(update.Message.Text, "11") ||
@@ -101,7 +101,7 @@ func Handler(ctx context.Context,
 			update.Message.From.ID,
 			update.Message.Text)
 		if err != nil {
-			msg.Text = "Не смог сохранить иди нахуй"
+			msg.Text = "444: Не получилось сохранить, попробуй /start"
 			return msg
 		}
 		msg.ReplyMarkup = DefaultKeyboard
@@ -113,7 +113,7 @@ func Handler(ctx context.Context,
 	case "Понедельник":
 		course, group, err := userRepo.GetUserInfo(ctx, update.Message.From.ID)
 		if err != nil {
-			msg.Text = "Че то пошло не так иди нахуй"
+			msg.Text = "555: Что то не работает, попробуй /start"
 			return msg
 		}
 		msg.Text = schedule.GetSchedule(course, group, gs).WeekDay[0].ToMessage()
@@ -121,7 +121,7 @@ func Handler(ctx context.Context,
 	case "Вторник":
 		course, group, err := userRepo.GetUserInfo(ctx, update.Message.From.ID)
 		if err != nil {
-			msg.Text = "Че то пошло не так иди нахуй"
+			msg.Text = "555: Что то не работает, попробуй /start"
 			return msg
 		}
 		msg.Text = schedule.GetSchedule(course, group, gs).WeekDay[1].ToMessage()
@@ -129,7 +129,7 @@ func Handler(ctx context.Context,
 	case "Среда":
 		course, group, err := userRepo.GetUserInfo(ctx, update.Message.From.ID)
 		if err != nil {
-			msg.Text = "Че то пошло не так иди нахуй"
+			msg.Text = "555: Что то не работает, попробуй /start"
 			return msg
 		}
 		msg.Text = schedule.GetSchedule(course, group, gs).WeekDay[2].ToMessage()
@@ -137,7 +137,7 @@ func Handler(ctx context.Context,
 	case "Четверг":
 		course, group, err := userRepo.GetUserInfo(ctx, update.Message.From.ID)
 		if err != nil {
-			msg.Text = "Че то пошло не так иди нахуй"
+			msg.Text = "555: Что то не работает, попробуй /start"
 			return msg
 		}
 		msg.Text = schedule.GetSchedule(course, group, gs).WeekDay[3].ToMessage()
@@ -145,7 +145,7 @@ func Handler(ctx context.Context,
 	case "Пятница":
 		course, group, err := userRepo.GetUserInfo(ctx, update.Message.From.ID)
 		if err != nil {
-			msg.Text = "Че то пошло не так иди нахуй"
+			msg.Text = "555: Что то не работает, попробуй /start"
 			return msg
 		}
 		msg.Text = schedule.GetSchedule(course, group, gs).WeekDay[4].ToMessage()
@@ -153,7 +153,7 @@ func Handler(ctx context.Context,
 	case "Суббота":
 		course, group, err := userRepo.GetUserInfo(ctx, update.Message.From.ID)
 		if err != nil {
-			msg.Text = "Че то пошло не так иди нахуй"
+			msg.Text = "555: Что то не работает, попробуй /start"
 			return msg
 		}
 		msg.Text = schedule.GetSchedule(course, group, gs).WeekDay[5].ToMessage()
@@ -161,7 +161,7 @@ func Handler(ctx context.Context,
 	case "Сегодня":
 		course, group, err := userRepo.GetUserInfo(ctx, update.Message.From.ID)
 		if err != nil {
-			msg.Text = "Че то пошло не так иди нахуй"
+			msg.Text = "555: Что то не работает, попробуй /start"
 			return msg
 		}
 		msg.Text = schedule.GetSchedule(course, group, gs).WeekDay[getWeekDay()].ToMessage()
@@ -178,7 +178,7 @@ func Handler(ctx context.Context,
 		return msg
 
 	default:
-		msg.Text = "Соси хуй"
+		msg.Text = "666:Напиши /start"
 	}
 	return msg
 }
