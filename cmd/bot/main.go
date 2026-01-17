@@ -5,7 +5,6 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
-	"log"
 	"log/slog"
 	"muivScheduleTgBot/internal/bot"
 	"muivScheduleTgBot/internal/repo"
@@ -23,11 +22,6 @@ func main() {
 		panic(err)
 	}
 	defer logFile.Close()
-
-	log.SetOutput(logFile)
-	log.Println("LOG REDIRECT TEST")
-
-	log.SetFlags(log.Ldate | log.Ltime)
 
 	logger := slog.New(slog.NewJSONHandler(logFile, nil))
 	slog.SetDefault(logger)
