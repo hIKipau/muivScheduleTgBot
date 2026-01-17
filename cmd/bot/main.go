@@ -2,10 +2,10 @@ package main
 
 import (
 	"context"
-	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
+	"log"
 	"log/slog"
 	"muivScheduleTgBot/internal/bot"
 	"muivScheduleTgBot/internal/repo"
@@ -14,11 +14,26 @@ import (
 )
 
 func main() {
-	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+	logFile, err := os.OpenFile(
+		"app.log",
+		os.O_CREATE|os.O_WRONLY|os.O_TRUNC,
+		0644,
+	)
+	if err != nil {
+		panic(err)
+	}
+	defer logFile.Close()
+
+	log.SetOutput(logFile)
+	log.Println("LOG REDIRECT TEST")
+
+	log.SetFlags(log.Ldate | log.Ltime)
+
+	logger := slog.New(slog.NewJSONHandler(logFile, nil))
 	slog.SetDefault(logger)
 	slog.Info("logger was initialized")
 
-	err := godotenv.Load()
+	err = godotenv.Load()
 	if err != nil {
 		slog.Error("Error loading .env file", err)
 		panic(err)
@@ -27,7 +42,7 @@ func main() {
 
 	conn, err := pgxpool.New(context.Background(), os.Getenv("DATABASE_URL"))
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
+		slog.Error("Unable to connect to database: %v\n", err)
 		panic(err)
 	}
 	slog.Info("successfully connected to database")
@@ -41,7 +56,7 @@ func main() {
 		panic(err)
 	}
 	slog.Info("Authorized on account %s", TgBot.Self.UserName)
-	TgBot.Debug = true
+	TgBot.Debug = false
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 
@@ -68,6 +83,7 @@ func main() {
 				slog.Error("TgBot cant send new message", err)
 				panic(err)
 			}
+
 			err = gs.LoadSchedule()
 			slog.Info("Schedules file was loaded successfully")
 			continue
